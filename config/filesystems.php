@@ -29,10 +29,16 @@ return [
     */
 
     'disks' => [
-
+        //config simple
+        // 'admin' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app')
+        // ],
         'admin' => [
             'driver' => 'local',
-            'root' => storage_path('app')
+            'root' => public_path('uploads'),
+            'visibility' => 'public',
+            'url' => env('APP_URL').'/uploads'
         ],
 
         'local' => [
