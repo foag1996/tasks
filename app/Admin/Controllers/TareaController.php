@@ -15,7 +15,7 @@ class TareaController extends AdminController
      *
      * @var string
      */
-    protected $title = 'Tarea';
+    protected $title = 'Gestión de Tareas';
 
     /**
      * Make a grid builder.
@@ -33,6 +33,20 @@ class TareaController extends AdminController
         $grid->column('tarea_completada', __('Tarea completada'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
+
+        // Agregar filtro unificado
+        $grid->filter(function($filter){
+
+            // Remove the default id filter
+            $filter->disableIdFilter();
+
+            // Add a custom filter
+            $filter->where(function ($query) {
+                $query->where('titulo', 'like', "%{$this->input}%")
+                      ->orWhere('descripcion', 'like', "%{$this->input}%");
+            }, 'Buscar por título o descripción')->placeholder('Ingrese título o descripción');
+        });
+
 
         return $grid;
     }
@@ -67,9 +81,9 @@ class TareaController extends AdminController
     {
         $form = new Form(new Tarea());
 
-        $form->text('titulo', __('Titulo'));
-        $form->text('descripcion', __('Descripcion'));
-        $form->date('fecha_vencimiento', __('Fecha vencimiento'))->default(date('Y-m-d'));
+        $form->text('titulo', __('Titulo'))->rules('required')->placeholder('Ingrese título');
+        $form->textarea('descripcion', __('Descripcion'))->rules('required')->placeholder('Ingrese Descripción');
+        $form->date('fecha_vencimiento', __('Fecha vencimiento'))->default(date('Y-m-d'))->rules('required');
         $form->switch('tarea_completada', __('Tarea completada'));
 
         return $form;
